@@ -3,6 +3,7 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { DrumMachine } from './components/DrumMachine';
 import { AuthButton } from './components/AuthButton';
 import { PatternLibrary } from './components/PatternLibrary';
+import { PresetSongs } from './components/PresetSongs';
 import { supabase, Pattern, Bar, DistortionSettings } from './lib/supabase';
 import { DrumKit } from './lib/audioEngine';
 import defaultPattern from './data/22Nov_1st_2bars-1763833511838.json';
@@ -73,7 +74,7 @@ function AppContent() {
     setKey(prev => prev + 1);
   };
 
-  const handleImport = (data: { bars: Bar[]; bpm: number; kit: DrumKit; songName: string }) => {
+  const handleImport = (data: { bars: Bar[]; bpm: number; kit: DrumKit; songName: string; swing?: number; distortion?: DistortionSettings }) => {
     setCurrentPattern({
       id: '',
       user_id: '',
@@ -81,6 +82,8 @@ function AppContent() {
       bpm: data.bpm,
       kit_type: data.kit,
       bars: data.bars,
+      swing: data.swing || 0,
+      distortion: data.distortion || { kick: false, snare: false, clap: false },
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
     });
@@ -101,6 +104,7 @@ function AppContent() {
           </div>
 
           <div className="flex items-center gap-3">
+            <PresetSongs onLoadPattern={handleImport} />
             {user && (
               <>
                 <button
