@@ -1,0 +1,36 @@
+{
+  "songName": "Californication - RHCP",
+  "artist": "Red Hot Chili Peppers",
+  "bpm": 96,
+  "kit": "jazz",
+  "bars": [
+    {
+      "kick": [true, false, false, false, false, false, true, false, true, false, false, false, false, false, false, false],
+      "snare": [false, false, false, false, true, false, false, false, false, false, false, false, true, false, false, false],
+      "snare_accent": [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
+      "hihat": [true, false, true, false, true, false, true, false, true, false, true, false, true, false, true, false],
+      "openhat": [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
+      "clap": [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
+      "tom": [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
+      "rim": [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
+      "cowbell": [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false]
+    },
+    {
+      "kick": [true, false, false, false, false, false, true, false, true, false, false, false, false, false, false, false],
+      "snare": [false, false, false, false, true, false, false, false, false, false, false, false, true, false, false, false],
+      "snare_accent": [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
+      "hihat": [true, false, true, false, true, false, true, false, true, false, true, false, true, false, true, false],
+      "openhat": [false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false],
+      "clap": [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
+      "tom": [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
+      "rim": [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
+      "cowbell": [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false]
+    }
+  ],
+  "swing": 0,
+  "distortion": {
+    "kick": false,
+    "snare": false,
+    "clap": false
+  }
+}
