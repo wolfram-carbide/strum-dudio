@@ -45,9 +45,12 @@ export function generateSheetMusicSVG(
   <defs>
     <style>
       .staff-line { stroke: #1a1a1a; stroke-width: 1.5; }
-      .bar-line { stroke: #1a1a1a; stroke-width: 2; }
+      .bar-line { stroke: #1a1a1a; stroke-width: 3.5; }
       .double-bar-thin { stroke: #1a1a1a; stroke-width: 2; }
       .double-bar-thick { stroke: #1a1a1a; stroke-width: 5; }
+      .bar-background-light { fill: rgba(255, 255, 255, 0.4); }
+      .bar-background-dark { fill: rgba(220, 210, 190, 0.25); }
+      .bar-number { font-family: Arial, sans-serif; font-size: 14px; font-weight: bold; fill: #555; }
       .note { fill: #000; }
       .note-stem { stroke: #000; stroke-width: 1.5; }
       .note-x { stroke: #000; stroke-width: 2.5; fill: none; }
@@ -108,6 +111,15 @@ export function generateSheetMusicSVG(
   // Draw bars and notes
   bars.forEach((bar, barIndex) => {
     const barX = leftMargin + barIndex * barWidth;
+
+    // Add alternating background for each bar
+    const nextBarX = leftMargin + (barIndex + 1) * barWidth;
+    const bgClass = barIndex % 2 === 0 ? 'bar-background-light' : 'bar-background-dark';
+    svg += `  <rect x="${barX}" y="${staffTop - 30}" width="${barWidth}" height="${4 * staffSpacing + 40}" class="${bgClass}"/>\n`;
+
+    // Add bar number above the staff
+    const barNumberX = barX + barWidth / 2;
+    svg += `  <text x="${barNumberX}" y="${staffTop - 10}" text-anchor="middle" class="bar-number">${barIndex + 1}</text>\n`;
 
     svg += `  <line x1="${barX}" y1="${staffTop}" x2="${barX}" y2="${staffTop + 4 * staffSpacing}" class="bar-line"/>\n`;
 
