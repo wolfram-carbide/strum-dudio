@@ -61,10 +61,13 @@ export function SheetMusicViewer({
     const container = containerRef.current;
     if (!container) return;
 
-    // Calculate the position based on current bar
-    const margin = 40;
-    const barWidth = Math.max(1200, bars.length * 400) / bars.length - (2 * margin / bars.length);
-    const scrollPosition = margin + currentBar * barWidth - container.clientWidth / 2 + barWidth / 2;
+    // Calculate the position based on current bar (matching sheetMusicExport dimensions)
+    const leftMargin = 180;
+    const rightMargin = 40;
+    const width = Math.max(1400, bars.length * 450);
+    const staffWidth = width - leftMargin - rightMargin;
+    const barWidth = staffWidth / bars.length;
+    const scrollPosition = leftMargin + currentBar * barWidth - container.clientWidth / 2 + barWidth / 2;
 
     container.scrollTo({
       left: Math.max(0, scrollPosition),
