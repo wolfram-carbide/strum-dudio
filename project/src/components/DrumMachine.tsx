@@ -429,7 +429,14 @@ export function DrumMachine({
           />
         </div>
 
-        <SheetMusicViewer bars={bars} bpm={bpm} songName={songName || 'Untitled Pattern'} />
+        <SheetMusicViewer
+          bars={bars}
+          bpm={bpm}
+          songName={songName || 'Untitled Pattern'}
+          currentBar={currentBar}
+          currentBeat={currentBeat}
+          playbackState={playbackState}
+        />
       </div>
     </div>
   );
