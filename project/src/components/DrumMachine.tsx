@@ -6,6 +6,7 @@ import { Controls } from './Controls';
 import { BarList } from './BarList';
 import defaultPattern from '../data/Default_Marz-1761505345620.json';
 import { downloadSheetMusicSVG } from '../lib/sheetMusicExport';
+import { SheetMusicViewer } from './SheetMusicViewer';
 
 const DRUMS: DrumType[] = ['hihat', 'snare', 'kick', 'openhat', 'clap', 'tom', 'rim', 'cowbell'];
 const BEATS_PER_BAR = 16;
@@ -404,27 +405,31 @@ export function DrumMachine({
         onDistortionChange={setDistortion}
       />
 
-      <div ref={gridContainerRef} className="flex-1 overflow-x-auto overflow-y-hidden">
-        <BarList
-          bars={bars}
-          currentBar={currentBar}
-          currentBeat={currentBeat}
-          playbackState={playbackState}
-          selectedBar={selectedBar}
-          onToggleBeat={toggleBeat}
-          onToggleAccent={toggleAccent}
-          onDeleteBar={deleteBar}
-          onDuplicateBar={duplicateBar}
-          onCopyBar={copyBar}
-          onPasteBar={pasteBar}
-          onMoveBar={moveBar}
-          onClearBar={clearBar}
-          onSelectBar={setSelectedBar}
-          onAddBar={addBar}
-          hasCopiedBar={copiedBar !== null}
-          canAddBar={bars.length < 30}
-          barRefs={barRefs}
-        />
+      <div className="flex-1 overflow-y-auto min-h-0 flex flex-col gap-4">
+        <div ref={gridContainerRef} className="flex-1 overflow-x-auto overflow-y-hidden">
+          <BarList
+            bars={bars}
+            currentBar={currentBar}
+            currentBeat={currentBeat}
+            playbackState={playbackState}
+            selectedBar={selectedBar}
+            onToggleBeat={toggleBeat}
+            onToggleAccent={toggleAccent}
+            onDeleteBar={deleteBar}
+            onDuplicateBar={duplicateBar}
+            onCopyBar={copyBar}
+            onPasteBar={pasteBar}
+            onMoveBar={moveBar}
+            onClearBar={clearBar}
+            onSelectBar={setSelectedBar}
+            onAddBar={addBar}
+            hasCopiedBar={copiedBar !== null}
+            canAddBar={bars.length < 30}
+            barRefs={barRefs}
+          />
+        </div>
+
+        <SheetMusicViewer bars={bars} bpm={bpm} songName={songName || 'Untitled Pattern'} />
       </div>
     </div>
   );
