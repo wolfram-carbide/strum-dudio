@@ -27,26 +27,35 @@ export function generateSheetMusicSVG(
   currentBeat: number = 0,
   playbackState: 'playing' | 'paused' | 'stopped' = 'stopped'
 ): string {
-  const width = Math.max(1200, bars.length * 400);
-  const height = 800;
-  const margin = 40;
-  const staffTop = 150;
-  const staffSpacing = 25; // Increased spacing for better visibility
-  const barWidth = (width - 2 * margin) / bars.length;
+  const width = Math.max(1400, bars.length * 450);
+  const height = 500;
+  const leftMargin = 180; // Extra space for drum key/legend
+  const rightMargin = 40;
+  const staffTop = 120;
+  const staffSpacing = 25;
+  const staffWidth = width - leftMargin - rightMargin;
+  const barWidth = staffWidth / bars.length;
+
+  // Positions for clef and time signature
+  const clefX = leftMargin - 60;
+  const timeSignatureX = leftMargin - 30;
 
   let svg = `<?xml version="1.0" encoding="UTF-8"?>
 <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <style>
       .staff-line { stroke: #1a1a1a; stroke-width: 1.5; }
-      .bar-line { stroke: #1a1a1a; stroke-width: 2.5; }
+      .bar-line { stroke: #1a1a1a; stroke-width: 2; }
+      .double-bar-thin { stroke: #1a1a1a; stroke-width: 2; }
+      .double-bar-thick { stroke: #1a1a1a; stroke-width: 5; }
       .note { fill: #000; }
       .note-stem { stroke: #000; stroke-width: 1.5; }
       .note-x { stroke: #000; stroke-width: 2.5; fill: none; }
-      .title { font-family: Georgia, serif; font-size: 24px; font-weight: bold; fill: #1a1a1a; }
-      .tempo { font-family: Arial, sans-serif; font-size: 14px; fill: #333; }
-      .legend { font-family: Arial, sans-serif; font-size: 11px; fill: #555; }
-      .beat-number { font-family: Arial, sans-serif; font-size: 10px; fill: #666; }
+      .title { font-family: Georgia, serif; font-size: 18px; font-weight: normal; fill: #333; }
+      .tempo { font-family: Arial, sans-serif; font-size: 12px; fill: #555; font-style: italic; }
+      .drum-key { font-family: Arial, sans-serif; font-size: 11px; fill: #444; }
+      .drum-key-title { font-family: Arial, sans-serif; font-size: 12px; fill: #333; font-weight: bold; }
+      .time-sig { font-family: Georgia, serif; font-size: 20px; font-weight: bold; fill: #1a1a1a; }
       .playback-indicator { stroke: #ef4444; stroke-width: 2.5; opacity: 0.8; }
     </style>
   </defs>
@@ -54,45 +63,56 @@ export function generateSheetMusicSVG(
   <rect width="${width}" height="${height}" fill="#f5f1e8"/>
 `;
 
-  svg += `  <text x="${width / 2}" y="40" text-anchor="middle" class="title">${songName || 'Drum Pattern'}</text>\n`;
-  svg += `  <text x="${width / 2}" y="70" text-anchor="middle" class="tempo">Tempo: ${bpm} BPM</text>\n`;
+  // Title and tempo in top left corner (more subtle)
+  svg += `  <text x="20" y="30" class="title">${songName || 'Drum Pattern'}</text>\n`;
+  svg += `  <text x="20" y="50" class="tempo">♩ = ${bpm}</text>\n`;
 
+  // Draw staff lines
   for (let i = 0; i < 5; i++) {
     const y = staffTop + i * staffSpacing;
-    svg += `  <line x1="${margin}" y1="${y}" x2="${width - margin}" y2="${y}" class="staff-line"/>\n`;
+    svg += `  <line x1="${clefX - 10}" y1="${y}" x2="${width - rightMargin}" y2="${y}" class="staff-line"/>\n`;
   }
 
-  // Compact legend at the bottom
-  const legendY = staffTop + 5 * staffSpacing + 40;
+  // Draw percussion clef (two vertical parallel lines)
+  const clefTop = staffTop;
+  const clefBottom = staffTop + 4 * staffSpacing;
+  svg += `  <line x1="${clefX}" y1="${clefTop}" x2="${clefX}" y2="${clefBottom}" stroke="#1a1a1a" stroke-width="3"/>\n`;
+  svg += `  <line x1="${clefX + 8}" y1="${clefTop}" x2="${clefX + 8}" y2="${clefBottom}" stroke="#1a1a1a" stroke-width="3"/>\n`;
+
+  // Draw time signature (4/4)
+  const timeSigY = staffTop + 2 * staffSpacing;
+  svg += `  <text x="${timeSignatureX}" y="${timeSigY - 10}" text-anchor="middle" class="time-sig">4</text>\n`;
+  svg += `  <text x="${timeSignatureX}" y="${timeSigY + 22}" text-anchor="middle" class="time-sig">4</text>\n`;
+
+  // Draw drum key (legend) on the left side
+  const keyX = 20;
+  const keyStartY = staffTop;
+  svg += `  <text x="${keyX}" y="${keyStartY}" class="drum-key-title">Drum Key:</text>\n`;
+
   const legendItems = [
     { label: 'HH', name: 'Hi-Hat' },
-    { label: 'SD', name: 'Snare' },
-    { label: 'BD', name: 'Kick' },
     { label: 'OH', name: 'Open Hat' },
     { label: 'TM', name: 'Tom' },
-    { label: 'RS', name: 'Rim' },
+    { label: 'SD', name: 'Snare' },
     { label: 'CP', name: 'Clap' },
+    { label: 'RS', name: 'Rim' },
+    { label: 'BD', name: 'Kick' },
     { label: 'CB', name: 'Cowbell' },
   ];
 
-  svg += `  <text x="${margin}" y="${legendY}" class="legend" font-weight="bold">Legend:</text>\n`;
   legendItems.forEach((item, idx) => {
-    const x = margin + 70 + (idx * 75);
-    svg += `  <text x="${x}" y="${legendY}" class="legend">${item.label}=${item.name}</text>\n`;
+    const y = keyStartY + 20 + (idx * 16);
+    svg += `  <text x="${keyX}" y="${y}" class="drum-key">${item.label} - ${item.name}</text>\n`;
   });
 
+  // Draw bars and notes
   bars.forEach((bar, barIndex) => {
-    const barX = margin + barIndex * barWidth;
+    const barX = leftMargin + barIndex * barWidth;
 
     svg += `  <line x1="${barX}" y1="${staffTop}" x2="${barX}" y2="${staffTop + 4 * staffSpacing}" class="bar-line"/>\n`;
 
     for (let beat = 0; beat < 16; beat++) {
       const beatX = barX + (beat + 0.5) * (barWidth / 16);
-
-      if (beat % 4 === 0) {
-        const beatNumber = beat + 1;
-        svg += `  <text x="${beatX}" y="${staffTop - 10}" text-anchor="middle" class="beat-number">${beatNumber}</text>\n`;
-      }
 
       DRUM_NOTATION.forEach((notation) => {
         if (bar[notation.drum][beat]) {
@@ -124,13 +144,16 @@ export function generateSheetMusicSVG(
     }
   });
 
-  svg += `  <line x1="${width - margin}" y1="${staffTop}" x2="${width - margin}" y2="${staffTop + 4 * staffSpacing}" class="bar-line"/>\n`;
+  // Draw double bar line at the end (thin + thick)
+  const endX = width - rightMargin;
+  svg += `  <line x1="${endX - 6}" y1="${staffTop}" x2="${endX - 6}" y2="${staffTop + 4 * staffSpacing}" class="double-bar-thin"/>\n`;
+  svg += `  <line x1="${endX}" y1="${staffTop}" x2="${endX}" y2="${staffTop + 4 * staffSpacing}" class="double-bar-thick"/>\n`;
 
   // Add playback position indicator
   if (playbackState === 'playing' && currentBar < bars.length) {
-    const barX = margin + currentBar * barWidth;
+    const barX = leftMargin + currentBar * barWidth;
     const beatX = barX + (currentBeat + 0.5) * (barWidth / 16);
-    const indicatorTop = staffTop - 30;
+    const indicatorTop = staffTop - 20;
     const indicatorBottom = staffTop + 4 * staffSpacing + 10;
 
     svg += `  <line x1="${beatX}" y1="${indicatorTop}" x2="${beatX}" y2="${indicatorBottom}" class="playback-indicator"/>\n`;
